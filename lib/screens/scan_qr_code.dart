@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -46,191 +47,211 @@ class _ScanQrCodeState extends State<ScanQrCode> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
     return WillPopScope(
       onWillPop: () async {
         return true;
       },
-      child: Scaffold(
-        backgroundColor: KColor.scaffoldColor,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          leading: GestureDetector(
+      child: GestureDetector(
+        onTap: () {
+          SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+        },
+        child: Scaffold(
+          backgroundColor: KColor.scaffoldColor,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            leading: GestureDetector(
+              onTap: () {
+                Get.back();
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 15.h, left: 30.w),
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  color: KColor.greyColor,
+                ),
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: Container(
+              margin: EdgeInsets.only(top: 15.h),
+              child: Text(
+                "Scan QR Code",
+                style: TextStyle(
+                  color: KColor.greyColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25.sp,
+                ),
+              ),
+            ),
+            centerTitle: true,
+          ),
+          body: GestureDetector(
             onTap: () {
-              Get.back();
+              SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
             },
             child: Container(
-              margin: EdgeInsets.only(top: 15.h, left: 30.w),
-              child: Icon(
-                Icons.arrow_back_ios,
-                color: KColor.greyColor,
-              ),
-            ),
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Container(
-            margin: EdgeInsets.only(top: 15.h),
-            child: Text(
-              "Scan QR Code",
-              style: TextStyle(
-                color: KColor.greyColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 25.sp,
-              ),
-            ),
-          ),
-          centerTitle: true,
-        ),
-        body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 25.w),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20.h,
-              ),
-              Expanded(
-                flex: 1,
-                child: GestureDetector(
-                  onTap: () {
-                    // openWifiConnectModal(WiFi.fromNative(
-                    //     {"ssid": "MrWick", "password": "newpas\$1290"}));
-                    // onTap();
-                  },
-                  child: Container(
-                    width: Get.width,
-                    child: Neumorphic(
-                      style: NeumorphicStyle(
-                        boxShape: NeumorphicBoxShape.roundRect(
-                          BorderRadius.circular(20),
-                        ),
-                        intensity: 0.7,
-                        shadowLightColorEmboss: Colors.grey,
-                        depth: 7,
-                        color: KColor.primaryColor.withOpacity(0.01),
-                      ),
-                      padding: EdgeInsets.all(
-                        20,
-                      ),
+              padding: EdgeInsets.symmetric(horizontal: 25.w),
+              margin: EdgeInsets.only(bottom: 35.h),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: () {
+                        // openWifiConnectModal(WiFi.fromNative(
+                        //     {"ssid": "MrWick", "password": "newpas\$1290"}));
+                        // onTap();
+                      },
                       child: Container(
-                        child: Obx(
-                          () => con.requestingPermission.value
-                              ? SizedBox.shrink()
-                              : con.hasPermission.value
-                                  ? Container(
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15)),
-                                        child: MobileScanner(
-                                          // fit: BoxFit.contain,
-                                          controller: scannerController,
-                                          onDetect: (capture) {
-                                            if (capture.barcodes.isNotEmpty &&
-                                                capture.barcodes[0].format ==
-                                                    BarcodeFormat.qrCode) {
-                                              if (capture.barcodes[0].wifi !=
-                                                  null) {
-                                                if (!Get.isBottomSheetOpen!) {
-                                                  print("SSID" +
-                                                      capture.barcodes[0].wifi!
-                                                          .ssid!);
+                        width: Get.width,
+                        child: Neumorphic(
+                          style: NeumorphicStyle(
+                            boxShape: NeumorphicBoxShape.roundRect(
+                              BorderRadius.circular(20),
+                            ),
+                            intensity: 0.7,
+                            shadowLightColorEmboss: Colors.grey,
+                            depth: 7,
+                            color: KColor.primaryColor.withOpacity(0.01),
+                          ),
+                          padding: EdgeInsets.all(
+                            20,
+                          ),
+                          child: Container(
+                            child: Obx(
+                              () => con.requestingPermission.value
+                                  ? SizedBox.shrink()
+                                  : con.hasPermission.value
+                                      ? Container(
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15)),
+                                            child: MobileScanner(
+                                              // fit: BoxFit.contain,
+                                              controller: scannerController,
+                                              onDetect: (capture) {
+                                                if (capture
+                                                        .barcodes.isNotEmpty &&
+                                                    capture.barcodes[0]
+                                                            .format ==
+                                                        BarcodeFormat.qrCode) {
+                                                  if (capture
+                                                          .barcodes[0].wifi !=
+                                                      null) {
+                                                    if (!Get
+                                                        .isBottomSheetOpen!) {
+                                                      print("SSID" +
+                                                          capture.barcodes[0]
+                                                              .wifi!.ssid!);
 
-                                                  scannedSSID = capture
-                                                      .barcodes[0].wifi!.ssid!;
-                                                  con.scanned.value = true;
-                                                  scannerController.stop();
-                                                  openWifiConnectModal(capture
-                                                      .barcodes[0].wifi!);
+                                                      scannedSSID = capture
+                                                          .barcodes[0]
+                                                          .wifi!
+                                                          .ssid!;
+                                                      con.scanned.value = true;
+                                                      scannerController.stop();
+                                                      openWifiConnectModal(
+                                                          capture.barcodes[0]
+                                                              .wifi!);
+                                                    }
+                                                  }
                                                 }
-                                              }
-                                            }
+                                              },
+                                            ),
+
+                                            //  Obx(
+                                            //   () => con.scanned.value
+                                            //       ? Container(
+                                            //           color: Colors.black,
+                                            //           alignment: Alignment.center,
+                                            //         )
+                                            //       : MobileScanner(
+                                            //           // fit: BoxFit.contain,
+                                            //           controller: scannerController,
+                                            //           onDetect: (capture) {
+                                            //             if (capture.barcodes
+                                            //                     .isNotEmpty &&
+                                            //                 capture.barcodes[0]
+                                            //                         .format ==
+                                            //                     BarcodeFormat
+                                            //                         .qrCode) {
+                                            //               if (capture.barcodes[0]
+                                            //                       .wifi !=
+                                            //                   null) {
+                                            //                 if (!Get
+                                            //                     .isBottomSheetOpen!) {
+                                            //                   print("SSID" +
+                                            //                       capture
+                                            //                           .barcodes[0]
+                                            //                           .wifi!
+                                            //                           .ssid!);
+
+                                            //                   scannedSSID = capture
+                                            //                       .barcodes[0]
+                                            //                       .wifi!
+                                            //                       .ssid!;
+                                            //                   con.scanned.value =
+                                            //                       true;
+                                            //                   openWifiConnectModal(
+                                            //                       scannedSSID);
+                                            //                 }
+                                            //               }
+                                            //             }
+                                            //           },
+                                            //         ),
+                                            // ),
+                                          ),
+                                        )
+                                      : GestureDetector(
+                                          onTap: () {
+                                            con.requestCameraPermission();
                                           },
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "Please allow camera permission to scan QR Code",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: KColor.greyColor,
+                                                  fontSize: 16.sp,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 20.h,
+                                              ),
+                                              Text(
+                                                "Try Again",
+                                                style: TextStyle(
+                                                  color: KColor.primaryColor,
+                                                  fontSize: 18.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
-
-                                        //  Obx(
-                                        //   () => con.scanned.value
-                                        //       ? Container(
-                                        //           color: Colors.black,
-                                        //           alignment: Alignment.center,
-                                        //         )
-                                        //       : MobileScanner(
-                                        //           // fit: BoxFit.contain,
-                                        //           controller: scannerController,
-                                        //           onDetect: (capture) {
-                                        //             if (capture.barcodes
-                                        //                     .isNotEmpty &&
-                                        //                 capture.barcodes[0]
-                                        //                         .format ==
-                                        //                     BarcodeFormat
-                                        //                         .qrCode) {
-                                        //               if (capture.barcodes[0]
-                                        //                       .wifi !=
-                                        //                   null) {
-                                        //                 if (!Get
-                                        //                     .isBottomSheetOpen!) {
-                                        //                   print("SSID" +
-                                        //                       capture
-                                        //                           .barcodes[0]
-                                        //                           .wifi!
-                                        //                           .ssid!);
-
-                                        //                   scannedSSID = capture
-                                        //                       .barcodes[0]
-                                        //                       .wifi!
-                                        //                       .ssid!;
-                                        //                   con.scanned.value =
-                                        //                       true;
-                                        //                   openWifiConnectModal(
-                                        //                       scannedSSID);
-                                        //                 }
-                                        //               }
-                                        //             }
-                                        //           },
-                                        //         ),
-                                        // ),
-                                      ),
-                                    )
-                                  : GestureDetector(
-                                      onTap: () {
-                                        con.requestCameraPermission();
-                                      },
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "Please allow camera permission to scan QR Code",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: KColor.greyColor,
-                                              fontSize: 16.sp,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 20.h,
-                                          ),
-                                          Text(
-                                            "Try Again",
-                                            style: TextStyle(
-                                              color: KColor.primaryColor,
-                                              fontSize: 18.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
+                  SizedBox(
+                    height: 50.h,
+                  ),
+                ],
               ),
-              SizedBox(
-                height: 50.h,
-              ),
-            ],
+            ),
           ),
         ),
       ),

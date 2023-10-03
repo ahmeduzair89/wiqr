@@ -27,6 +27,7 @@ class CreateQrCodeController extends GetxController {
   TextEditingController ssidController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   RxString selectedColor = "#1E1E24".obs;
+  RxBool showInfo = false.obs;
   GetStorage box = GetStorage();
   List myQrCodes = [];
   late QrCodeModel qr;
@@ -40,7 +41,6 @@ class CreateQrCodeController extends GetxController {
     "#554640",
     "#3A405A",
     "#AA4465",
-    "#6247AA",
     "#6247AA",
     "#104F55",
     "#E1DD8F",

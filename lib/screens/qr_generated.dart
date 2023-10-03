@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -18,71 +19,78 @@ class QrGenerated extends StatelessWidget {
   CreateQrCodeController con = Get.find<CreateQrCodeController>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: KColor.scaffoldColor,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: GestureDetector(
-          onTap: () {
-            Get.back();
-          },
-          child: Container(
-            margin: EdgeInsets.only(top: 15.h, left: 30.w),
-            child: Icon(
-              Icons.arrow_back_ios,
-              color: KColor.greyColor,
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+    return GestureDetector(
+      onTap: () {
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      },
+      child: Scaffold(
+        backgroundColor: KColor.scaffoldColor,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: GestureDetector(
+            onTap: () {
+              Get.back();
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 15.h, left: 30.w),
+              child: Icon(
+                Icons.arrow_back_ios,
+                color: KColor.greyColor,
+              ),
             ),
           ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Container(
-          margin: EdgeInsets.only(top: 15.h),
-          child: Text(
-            "QR Code",
-            style: TextStyle(
-              color: KColor.greyColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 25.sp,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Container(
+            margin: EdgeInsets.only(top: 15.h),
+            child: Text(
+              "QR Code",
+              style: TextStyle(
+                color: KColor.greyColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 25.sp,
+              ),
             ),
           ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 25.w),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 40.h,
-            ),
-            RepaintBoundary(
-              key: globalKey,
-              child: Container(
-                width: Get.width,
-                height: Get.width * 0.8,
-                child: Neumorphic(
-                  style: NeumorphicStyle(
-                    boxShape: NeumorphicBoxShape.roundRect(
-                      BorderRadius.circular(20),
+        body: Container(
+          padding: EdgeInsets.symmetric(horizontal: 25.w),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 20.h,
+              ),
+              RepaintBoundary(
+                key: globalKey,
+                child: Container(
+                  width: Get.width,
+                  height: Get.width * 0.8,
+                  child: Neumorphic(
+                    style: NeumorphicStyle(
+                      boxShape: NeumorphicBoxShape.roundRect(
+                        BorderRadius.circular(20),
+                      ),
+                      intensity: 0.7,
+                      shadowLightColorEmboss: Colors.grey,
+                      depth: 7,
+                      color: KColor.primaryColor.withOpacity(0.01),
                     ),
-                    intensity: 0.7,
-                    shadowLightColorEmboss: Colors.grey,
-                    depth: 7,
-                    color: KColor.primaryColor.withOpacity(0.01),
-                  ),
-                  padding: EdgeInsets.all(
-                    20,
-                  ),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Obx(
-                      () => PrettyQrView.data(
-                        data: con.qr.codeData!,
-                        decoration: PrettyQrDecoration(
-                          shape: PrettyQrSmoothSymbol(
-                            roundFactor: 0.6,
-                            color: HexColor(con.selectedColor.value),
+                    padding: EdgeInsets.all(
+                      20,
+                    ),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Obx(
+                        () => PrettyQrView.data(
+                          data: con.qr.codeData!,
+                          decoration: PrettyQrDecoration(
+                            shape: PrettyQrSmoothSymbol(
+                              roundFactor: 0.6,
+                              color: HexColor(con.selectedColor.value),
+                            ),
                           ),
                         ),
                       ),
@@ -90,76 +98,80 @@ class QrGenerated extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 50.h,
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Color",
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: KColor.greyColor,
+              SizedBox(
+                height: 50.h,
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Color",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: KColor.greyColor,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
-            Container(
-              width: Get.width,
-              height: 60.h,
-              child: ListView.builder(
-                clipBehavior: Clip.none,
-                itemCount: con.colorList.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return Obx(
-                    () => ColorSelectorWidget(
-                      value: con.colorList[index],
-                      groupValue: con.selectedColor.value,
-                      onSelect: (v) {
-                        con.selectedColor.value = con.colorList[index];
-                        con.qr.color = con.colorList[index];
-                        print(con.qr.codeData);
-                      },
-                    ),
-                  );
-                },
+              SizedBox(
+                height: 20.h,
               ),
-            ),
-            SizedBox(
-              height: 50.h,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                MyRoundedButton(
-                    onTap: () {
-                      con.saveQr();
-                      // Get.back();
-                    },
-                    iconName: 'open-folder'),
-                MyRoundedButton(
-                    onTap: () {
-                      Get.offAll(() => Home());
-                    },
-                    iconName: 'home'),
-                MyRoundedButton(
-                    onTap: () {
-                      con.captureWidget();
-                    },
-                    iconName: 'download-file'),
-                MyRoundedButton(
-                    onTap: () {
-                      con.share();
-                    },
-                    iconName: 'share'),
-              ],
-            ),
-          ],
+              Container(
+                width: Get.width,
+                height: 60.h,
+                child: ListView.builder(
+                  clipBehavior: Clip.none,
+                  itemCount: con.colorList.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Obx(
+                      () => ColorSelectorWidget(
+                        value: con.colorList[index],
+                        groupValue: con.selectedColor.value,
+                        onSelect: (v) {
+                          con.selectedColor.value = con.colorList[index];
+                          con.qr.color = con.colorList[index];
+                          print(con.qr.codeData);
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 80.h,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MyRoundedButton(
+                      subTitle: "Save To\nFolder",
+                      onTap: () {
+                        con.saveQr();
+                        // Get.back();
+                      },
+                      iconName: 'open-folder'),
+                  MyRoundedButton(
+                      subTitle: "Go To\nHome",
+                      onTap: () {
+                        Get.offAll(() => Home());
+                      },
+                      iconName: 'home'),
+                  MyRoundedButton(
+                      subTitle: "Save To\nGallery",
+                      onTap: () {
+                        con.captureWidget();
+                      },
+                      iconName: 'download-file'),
+                  MyRoundedButton(
+                      subTitle: "Share\nQR Code",
+                      onTap: () {
+                        con.share();
+                      },
+                      iconName: 'share'),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
